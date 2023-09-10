@@ -1,0 +1,45 @@
+<project name="SocketTCP" default="run-server" basedir=".">
+
+	<property name="src.dir" value="src" />
+	<property name="build.dir" value="build" />
+	<property name="lib.dir" value="lib" />
+	<property name="main.class" value="server.Servidor" />
+	<property name="config.dir" value="src/config" />
+	
+	<path id="classpath">
+		<fileset dir="${lib.dir}">
+		</fileset>
+	</path>
+	
+	<path id="properties">
+	    <dirset dir="${config.dir}"/>
+	</path>
+
+	<target name="java-compile" description="Compilar">
+		<mkdir dir="${build.dir}" />
+		<javac srcdir="${src.dir}" destdir="${build.dir}" classpathref="classpath" includeantruntime="false" />
+	</target>
+
+	<!-- ejecutar servidor -->
+	<target name="run-server" description="servidor">
+		<echo>corriendo server</echo>
+		<java fork="true" classname="${main.class}" failonerror="true">
+			<classpath>
+				<pathelement location="${build.dir}" />
+				<path refid="classpath" />
+				<path refid="properties" />
+			</classpath>
+		</java>
+	</target>
+
+	<!-- ejecutar Cliente -->
+	<target name="run-client" description="Cliente" depends="java-compile">
+		<echo>corriendo cliente</echo>
+		<java fork="true" classname="client.Cliente" failonerror="true">
+			<classpath>
+				<pathelement location="${build.dir}" />
+				<path refid="classpath" />
+			</classpath>
+		</java>
+	</target>
+</project>
