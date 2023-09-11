@@ -47,9 +47,6 @@ public class Hilo extends Thread {
 			System.out.println("Recibido pedido: " + pedido.getNumPedido() + " En la mesa: " + pedido.getNumMesa() + ", asiento: " + pedido.getNumAsiento());
 			System.out.println("Orden: " + pedido.getPedMenu().getEntrada() + " " + pedido.getPedMenu().getPlatoFondo() + " " + pedido.getPedMenu().getBebidas());
 			
-			System.out.println("A que cheff deseas asignar este pedido?");
-			String cheff = reader.readLine();
-			
 			System.out.println("Presiona 1 para marcar como completado");
 			String opcion = reader.readLine();
 			

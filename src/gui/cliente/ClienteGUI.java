@@ -23,24 +23,30 @@ public class ClienteGUI extends JFrame {
     private JButton enviarPedidoButton;
     private Socket clienteSocket;
     private ObjectOutputStream dataOutputStream;
+    private ObjectInputStream dataInputStream;
     private Configurator configuracion = new Configurator("src/config.properties");
     
     public ClienteGUI() {
         // Configurar la interfaz gráfica
-        setTitle("Cliente de Pedidos");
+        setTitle("Realizar un pedido");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(400, 300);
         setLayout(new GridLayout(7, 2));
 
         // Componentes para seleccionar elementos del menú
+        String[] entradas = new String[]{"Entrada 1", "Entrada 2", "Entrada 3"};
+        String[] platoFondo = new String[]{"Plato Fondo 1", "Plato Fondo 2", "Plato Fondo 3"};
+        String[] bebidas = new String[]{"Bebida 1", "Bebida 2", "Bebida 3"};
+        String[] postres = new String[]{"Postre 1", "Postre 2", "Postre 3"};
+        
         JLabel entradaLabel = new JLabel("Entrada:");
-        entradaComboBox = new JComboBox<>(new String[]{"Entrada 1", "Entrada 2", "Entrada 3"});
+        entradaComboBox = new JComboBox<>(entradas);
         JLabel platoFondoLabel = new JLabel("Plato Fondo:");
-        platoFondoComboBox = new JComboBox<>(new String[]{"Plato Fondo 1", "Plato Fondo 2", "Plato Fondo 3"});
+        platoFondoComboBox = new JComboBox<>(platoFondo);
         JLabel bebidasLabel = new JLabel("Bebidas:");
-        bebidasComboBox = new JComboBox<>(new String[]{"Bebida 1", "Bebida 2", "Bebida 3"});
+        bebidasComboBox = new JComboBox<>(bebidas);
         JLabel postreLabel = new JLabel("Postre:");
-        postreComboBox = new JComboBox<>(new String[]{"Postre 1", "Postre 2", "Postre 3"});
+        postreComboBox = new JComboBox<>(postres);
 
         // Componentes para seleccionar la mesa y la silla
         JLabel mesaLabel = new JLabel("Mesa:");
@@ -70,7 +76,12 @@ public class ClienteGUI extends JFrame {
         // Manejador de eventos para el botón "Enviar Pedido"
         enviarPedidoButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                enviarPedido();
+                try {
+					enviarPedido();
+				} catch (ClassNotFoundException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
             }
         });
 
@@ -78,6 +89,7 @@ public class ClienteGUI extends JFrame {
         try {
             clienteSocket = new Socket(configuracion.getProperty("direccion"), configuracion.getIntProperty("puerto"));
             dataOutputStream = new ObjectOutputStream(clienteSocket.getOutputStream());
+            dataInputStream = new ObjectInputStream(clienteSocket.getInputStream());
         } catch (IOException e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(this, "Error al conectar al servidor.");
@@ -88,7 +100,7 @@ public class ClienteGUI extends JFrame {
         setVisible(true);
     }
 
-    private void enviarPedido() {
+    private void enviarPedido() throws ClassNotFoundException {
         try {
             // Crear un objeto Pedido con la información seleccionada por el cliente
             PedidoMenu pedidoMenu = new PedidoMenu();
@@ -114,6 +126,13 @@ public class ClienteGUI extends JFrame {
             platoFondoComboBox.setSelectedIndex(0);
             bebidasComboBox.setSelectedIndex(0);
             postreComboBox.setSelectedIndex(0);
+            
+            final Pedido pedidoRecibido = (Pedido) dataInputStream.readObject();
+            // Leer la respuesta del servidor
+            System.out.println("Respuesta del servidor: " + pedidoRecibido.isServido());
+
+            dataInputStream.close();
+            
         } catch (IOException e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(this, "Error al enviar el pedido.");

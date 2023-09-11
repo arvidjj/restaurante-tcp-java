@@ -11,9 +11,26 @@ public class Cheff extends AbstractBean implements Serializable {
 	private String nombre;
 	private String apellido;
 	private Pedido pedido;
+	private boolean disponible = true;
 	
 	public Cheff(String nombre) {
 		this.nombre = nombre;
+	}
+
+	public String getApellido() {
+		return apellido;
+	}
+
+	public void setApellido(String apellido) {
+		this.apellido = apellido;
+	}
+
+	public boolean isDisponible() {
+		return disponible;
+	}
+
+	public void setDisponible(boolean disponible) {
+		this.disponible = disponible;
 	}
 
 	public String getNombre() {

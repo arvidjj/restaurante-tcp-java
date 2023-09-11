@@ -13,7 +13,7 @@ public abstract class BaseService<T extends AbstractBean> implements IBaseServic
 		_lista = new HashMap<>();
 	}
 	
-	protected Map<Integer, T> getAll() {
+	public Map<Integer, T> getAll() {
 		return _lista;
 	}
 	
