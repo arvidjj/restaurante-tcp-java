@@ -56,7 +56,7 @@ public class Cliente {
 		   pedMenu.setBebidas("Jugo");
 		   pedMenu.setPostre("Helado");
 		   
-		   Pedido ped = new Pedido(1, 3, 2);
+		   Pedido ped = new Pedido(3, 2);
 		   ped.setPedMenu(pedMenu);
 		   return ped;
 	}

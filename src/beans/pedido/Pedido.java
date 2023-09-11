@@ -15,8 +15,7 @@ public class Pedido extends AbstractBean implements Serializable {
 	private PedidoMenu pedMenu;
 	private boolean Servido;
 	
-	public Pedido(int numPedido, int numMesa, int numAsiento) {
-		this.numPedido = numPedido;
+	public Pedido(int numMesa, int numAsiento) {
 		this.numMesa = numMesa;
 		this.numAsiento = numAsiento;
 		this.pedMenu = new PedidoMenu();
