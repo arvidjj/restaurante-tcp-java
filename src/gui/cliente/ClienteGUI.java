@@ -94,6 +94,8 @@ public class ClienteGUI extends JFrame {
             menuRecibido = (MenuC) dataInputStream.readObject();
             System.out.println(menuRecibido);
             
+            popularComboBoxes(menuRecibido);
+            
             
         } catch (IOException e) {
             e.printStackTrace();
