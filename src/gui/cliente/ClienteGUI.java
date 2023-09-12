@@ -7,6 +7,7 @@ import java.io.*;
 import java.net.*;
 import beans.pedido.Pedido;
 import beans.pedidoMenu.PedidoMenu;
+import controller.MenuC;
 import utils.Configurator;
 
 public class ClienteGUI extends JFrame {
@@ -26,27 +27,23 @@ public class ClienteGUI extends JFrame {
     private ObjectInputStream dataInputStream;
     private Configurator configuracion = new Configurator("src/config.properties");
     
-    public ClienteGUI() {
+    private MenuC menuRecibido;
+    
+    public ClienteGUI() throws ClassNotFoundException {
         // Configurar la interfaz gráfica
         setTitle("Realizar un pedido");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(400, 300);
         setLayout(new GridLayout(7, 2));
-
-        // Componentes para seleccionar elementos del menú
-        String[] entradas = new String[]{"Entrada 1", "Entrada 2", "Entrada 3"};
-        String[] platoFondo = new String[]{"Plato Fondo 1", "Plato Fondo 2", "Plato Fondo 3"};
-        String[] bebidas = new String[]{"Bebida 1", "Bebida 2", "Bebida 3"};
-        String[] postres = new String[]{"Postre 1", "Postre 2", "Postre 3"};
         
         JLabel entradaLabel = new JLabel("Entrada:");
-        entradaComboBox = new JComboBox<>(entradas);
+        entradaComboBox = new JComboBox<>();
         JLabel platoFondoLabel = new JLabel("Plato Fondo:");
-        platoFondoComboBox = new JComboBox<>(platoFondo);
+        platoFondoComboBox = new JComboBox<>();
         JLabel bebidasLabel = new JLabel("Bebidas:");
-        bebidasComboBox = new JComboBox<>(bebidas);
+        bebidasComboBox = new JComboBox<>();
         JLabel postreLabel = new JLabel("Postre:");
-        postreComboBox = new JComboBox<>(postres);
+        postreComboBox = new JComboBox<>();
 
         // Componentes para seleccionar la mesa y la silla
         JLabel mesaLabel = new JLabel("Mesa:");
@@ -90,6 +87,14 @@ public class ClienteGUI extends JFrame {
             clienteSocket = new Socket(configuracion.getProperty("direccion"), configuracion.getIntProperty("puerto"));
             dataOutputStream = new ObjectOutputStream(clienteSocket.getOutputStream());
             dataInputStream = new ObjectInputStream(clienteSocket.getInputStream());
+            
+            //OBTENER MENU EL STREAM
+            menuRecibido = new MenuC();
+            System.out.println("Obteniendo menu");
+            menuRecibido = (MenuC) dataInputStream.readObject();
+            System.out.println(menuRecibido);
+            
+            
         } catch (IOException e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(this, "Error al conectar al servidor.");
@@ -141,7 +146,12 @@ public class ClienteGUI extends JFrame {
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            new ClienteGUI();
+            try {
+				new ClienteGUI();
+			} catch (ClassNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
         });
     }
 }

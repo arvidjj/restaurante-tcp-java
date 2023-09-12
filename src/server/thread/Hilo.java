@@ -10,6 +10,7 @@ import java.net.Socket;
 import beans.cheff.Cheff;
 import beans.pedido.Pedido;
 import beans.usuario.Usuario;
+import controller.MenuC;
 import service.cheff.CheffiServiceImpl;
 import service.cheff.ICheffService;
 import service.usuario.IUsuarioService;	
@@ -39,10 +40,13 @@ public class Hilo extends Thread {
 		BufferedReader reader = 
 				  new BufferedReader(new InputStreamReader(System.in));
 		try {
-			//final Usuario usuario = (Usuario) _dataInputStream.readObject();
+			//DEVOLVER MENU
+			MenuC menuPrincipal = new MenuC();
+			_dataOutputStream.writeObject(menuPrincipal);
+			
+			//OBTENER PEDIDO
 			final Pedido pedido = (Pedido) _dataInputStream.readObject();
-			//usuario.setApellido(usuario.getApellido().toUpperCase() + " ==>");
-			//userService.save(usuario);
+			
 			System.out.println("Cheff asignado: " + chefAsignado.getNombre());
 			System.out.println("Recibido pedido: " + pedido.getNumPedido() + " En la mesa: " + pedido.getNumMesa() + ", asiento: " + pedido.getNumAsiento());
 			System.out.println("Orden: " + pedido.getPedMenu().getEntrada() + " " + pedido.getPedMenu().getPlatoFondo() + " " + pedido.getPedMenu().getBebidas());

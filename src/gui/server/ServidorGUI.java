@@ -15,7 +15,6 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Vector;
 
 public class ServidorGUI extends JFrame {
     /**
@@ -28,6 +27,7 @@ public class ServidorGUI extends JFrame {
     private JComboBox<String> boxCheffs;
     
     private Map<Integer, Cheff> chefs;
+    
     private int contadorHilo;
     CheffiServiceImpl cheffService;
     
@@ -50,7 +50,10 @@ public class ServidorGUI extends JFrame {
 				}
             }
         });
+
+
         chefs = new HashMap<>();
+        
         cheffService = new CheffiServiceImpl();
         Cheff chef1 = new Cheff("Cheff ramon");
         Cheff chef2 = new Cheff("Cheff felipe");
