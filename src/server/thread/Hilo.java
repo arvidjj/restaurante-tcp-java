@@ -40,11 +40,11 @@ public class Hilo extends Thread {
 		BufferedReader reader = 
 				  new BufferedReader(new InputStreamReader(System.in));
 		try {
-			//DEVOLVER MENU
+			//1- DEVOLVER MENU
 			MenuC menuPrincipal = new MenuC();
 			_dataOutputStream.writeObject(menuPrincipal);
 			
-			//OBTENER PEDIDO
+			//2- OBTENER PEDIDO (CUANDO EL CLIETNE PRESIONA ENVIAR)
 			final Pedido pedido = (Pedido) _dataInputStream.readObject();
 			
 			System.out.println("Cheff asignado: " + chefAsignado.getNombre());

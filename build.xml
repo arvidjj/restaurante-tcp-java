@@ -3,7 +3,7 @@
 	<property name="src.dir" value="src" />
 	<property name="build.dir" value="build" />
 	<property name="lib.dir" value="lib" />
-	<property name="main.class" value="server.Servidor" />
+	<property name="main.class" value="server.ServidorGUI" />
 	<property name="config.dir" value="src/config" />
 	
 	<path id="classpath">
@@ -35,7 +35,7 @@
 	<!-- ejecutar Cliente -->
 	<target name="run-client" description="Cliente" depends="java-compile">
 		<echo>corriendo cliente</echo>
-		<java fork="true" classname="client.Cliente" failonerror="true">
+		<java fork="true" classname="client.ClienteGUI" failonerror="true">
 			<classpath>
 				<pathelement location="${build.dir}" />
 				<path refid="classpath" />

@@ -6,6 +6,8 @@ import java.util.Map;
 
 import beans.comida.Comida;
 import beans.menu.MenuApp;
+import service.cheff.CheffiServiceImpl;
+import service.menu.MenuiServiceImpl;
 
 public class MenuC implements Serializable {
 
@@ -20,6 +22,10 @@ public class MenuC implements Serializable {
 	        Comida platoFondo1 = new Comida("PlatoFondo 1", 100000);
 	        Comida postre1 = new Comida("Postre 1", 100000);
 	        Comida bebida1 = new Comida("Bebida 1", 100000);
+	        Comida entrada2 = new Comida("Entrada 2", 100000);
+	        Comida platoFondo2 = new Comida("PlatoFondo 2", 100000);
+	        Comida postre2 = new Comida("Postre 2", 100000);
+	        Comida bebida2= new Comida("Bebida 2", 100000);
 	        Map<Integer, Comida> entradas = new HashMap<>();
 	        Map<Integer, Comida> platosFondo = new HashMap<>();
 	        Map<Integer, Comida> postres = new HashMap<>();
@@ -28,6 +34,11 @@ public class MenuC implements Serializable {
 	        platosFondo.put(1, platoFondo1);
 	        postres.put(1, postre1);
 	        bebidas.put(1, bebida1);
+	        
+	        entradas.put(2, entrada2);
+	        platosFondo.put(2, platoFondo2);
+	        postres.put(2, postre2);
+	        bebidas.put(2, bebida2);
 	        
 	        menuPrincipal = new MenuApp();
 	        menuPrincipal.setEntradas(entradas);

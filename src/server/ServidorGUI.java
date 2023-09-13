@@ -1,6 +1,9 @@
-package gui.server;
+package server;
 
 import javax.swing.*;
+
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 
 import beans.cheff.Cheff;
 import server.thread.Hilo;
@@ -13,60 +16,51 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.HashMap;
-import java.util.Map;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class ServidorGUI extends JFrame {
     /**
 	 * 
 	 */
+	private static final Logger loggeador = LogManager.getLogger(ServidorGUI.class.getName());  //logger
 	private static final long serialVersionUID = 1L;
 	private JTextArea logTextArea;
     private JButton asignarPedidoButton;
     Configurator configuracion = new Configurator("src/config.properties");
     private JComboBox<String> boxCheffs;
     
-    private Map<Integer, Cheff> chefs;
-    
     private int contadorHilo;
     CheffiServiceImpl cheffService;
-    
+
     public ServidorGUI() {
         super("Servidor TCP");
 
-        logTextArea = new JTextArea(20, 40);
+        logTextArea = new JTextArea(20, 20);
         logTextArea.setEditable(false);
         JScrollPane logScrollPane = new JScrollPane(logTextArea);
-        asignarPedidoButton = new JButton("Asignar Pedido");
-        
-        asignarPedidoButton.addActionListener(new ActionListener() {
-            @Override
-           public void actionPerformed(ActionEvent e) {
-                try {
-					asignarPedido(null);
-				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-            }
-        });
-
-
-        chefs = new HashMap<>();
+        asignarPedidoButton = new JButton("Asignar Pedido"); 
         
         cheffService = new CheffiServiceImpl();
         Cheff chef1 = new Cheff("Cheff ramon");
         Cheff chef2 = new Cheff("Cheff felipe");
-        chefs.put(1, chef1); 
-        chefs.put(2, chef2);
+        Cheff chef3 = new Cheff("Cheff juan");
         cheffService.save(chef1);
         cheffService.save(chef2);
+        cheffService.save(chef3);
+        
+        for (String chef : cheffService.getAll().values().stream()
+                .map(comida -> comida.getNombre())
+                .toArray(String[]::new)) {
+            System.out.println(chef);
+        }
         
         boxCheffs = new JComboBox<>();
         String[] chefNames = cheffService.getAll().values()
              .stream()
              .map(chef -> chef.getNombre())
              .toArray(String[]::new);
+        
      	boxCheffs.setModel(new DefaultComboBoxModel<>(chefNames));
      
         boxCheffs.setSelectedIndex(0); 
@@ -75,12 +69,11 @@ public class ServidorGUI extends JFrame {
         panel.add(asignarPedidoButton);
         panel.add(new JLabel("Seleccionar Chef: "));
         panel.add(boxCheffs);
-
+        
         Container container = getContentPane();
         container.setLayout(new BorderLayout());
         container.add(logScrollPane, BorderLayout.CENTER);
         container.add(panel, BorderLayout.SOUTH);
-
         
         contadorHilo = 1;
 
@@ -88,16 +81,29 @@ public class ServidorGUI extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setVisible(true);
-
+        
+        asignarPedidoButton.addActionListener(new ActionListener() {
+            @Override
+           public void actionPerformed(ActionEvent e) {
+                try {
+                	System.out.println("hola");
+					asignarPedido(null);
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+            }
+        });
         iniciarServidor();
+        
     }
 
     private void iniciarServidor() {
         try {
             ServerSocket serverSocket = new ServerSocket(configuracion.getIntProperty("puerto"));
-
+            log("Servidor TCP esperando conexiones en el puerto " + serverSocket.getLocalPort());
             while (true) {
-                log("Servidor TCP esperando conexiones en el puerto " + serverSocket.getLocalPort());
+                log("Esperando nuevo pedido...");
                 Socket socketCliente = serverSocket.accept();
                 log("Pedido recibido");
 
@@ -109,13 +115,11 @@ public class ServidorGUI extends JFrame {
     }
 
     private void asignarPedido(Socket socketcliente) throws IOException {
-        // Get the selected chef's name from the JComboBox
         String selectedChefName = (String) boxCheffs.getSelectedItem();
         Cheff chefAsignado = cheffService.findByName(selectedChefName);
 
         if (chefAsignado != null) {
-            // Create a new thread (Hilo) with the socket client, thread number, and the assigned chef
-            new Hilo(socketcliente, contadorHilo, chefAsignado); // Replace null with your Socket instance
+            new Hilo(socketcliente, contadorHilo, chefAsignado);
             log("Pedido asignado al Chef " + chefAsignado.getNombre());
             contadorHilo++;
         } else {
@@ -123,19 +127,15 @@ public class ServidorGUI extends JFrame {
         }
     }
 
-    private Cheff obtenerChefDisponible() {
-        for (Cheff chef : chefs.values()) {
-            if (chef.isDisponible()) {
-                chef.setDisponible(false); // Marcar al chef como no disponible
-                return chef;
-            }
-        }
-        return null; // No hay chefs disponibles
-    }
-
     
-    private void log(String message) {
-        logTextArea.append(message + "\n");
+    private void log(String mensaje) {
+    	////OBTENER FECHA Y HORA
+        LocalDateTime currentDateTime = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy 'a las' HH:mm");
+        String formattedDateTime = currentDateTime.format(formatter);
+        
+        logTextArea.append("("+ formattedDateTime + ") " + mensaje + "\n");
+        loggeador.info("("+ formattedDateTime + ") " +mensaje);
     }
 
     public static void main(String[] args) {
