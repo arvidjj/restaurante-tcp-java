@@ -1,3 +1,21 @@
-(13/09/2023 a las 22:52) Servidor TCP esperando conexiones en el puerto 8080
-  (13/09/2023 a las 22:52) Esperando nuevo pedido...
+(14/09/2023 a las 01:40) Servidor TCP esperando conexiones en el puerto 8080
+  (14/09/2023 a las 01:40) Esperando nuevo pedido...
+  (14/09/2023 a las 01:40) Pedido recibido desde puerto: 55815, seleccione el chef que desea asignar este pedido
+  (14/09/2023 a las 01:40) Esperando nuevo pedido...
+  (14/09/2023 a las 01:40) Pedido recibido desde puerto: 55820, seleccione el chef que desea asignar este pedido
+  (14/09/2023 a las 01:40) Esperando nuevo pedido...
+  (14/09/2023 a las 01:40) Pedido asignado al Chef Ramon
+  (14/09/2023 a las 01:41) Pedido asignado al Chef Juan
+  (14/09/2023 a las 01:41) (hilo 1) Recibido pedidos de la mesa: 2
+  (14/09/2023 a las 01:41) (hilo 1) Pedido #2 asignado al Chef Ramon
+  (14/09/2023 a las 01:41) (hilo 2) Recibido pedidos de la mesa: 1
+  (14/09/2023 a las 01:41) (hilo 2) Pedido #1 asignado al Chef Juan
+  (14/09/2023 a las 01:42) (hilo 2) Cheff Juan ya esta disponible de nuevo.
+  (14/09/2023 a las 01:42) (hilo 1) Cheff Ramon ya esta disponible de nuevo.
+  (14/09/2023 a las 01:51) Pedido recibido desde puerto: 55914, seleccione el chef que desea asignar este pedido
+  (14/09/2023 a las 01:51) Esperando nuevo pedido...
+  (14/09/2023 a las 01:51) Pedido asignado al Chef Juan
+  (14/09/2023 a las 01:51) (hilo 3) Recibido pedidos de la mesa: 1
+  (14/09/2023 a las 01:51) (hilo 3) Pedido #1 asignado al Chef Juan
+  (14/09/2023 a las 01:51) (hilo 3) Cheff Juan ya esta disponible de nuevo.
   

@@ -10,13 +10,11 @@ public class Pedido extends AbstractBean implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	private int numPedido;
-	private int numMesa;
 	private int numAsiento;
 	private PedidoMenu pedMenu;
 	private boolean Servido;
 	
-	public Pedido(int numMesa, int numAsiento) {
-		this.numMesa = numMesa;
+	public Pedido(int numAsiento) {
 		this.numAsiento = numAsiento;
 		this.pedMenu = new PedidoMenu();
 	}
@@ -25,12 +23,6 @@ public class Pedido extends AbstractBean implements Serializable {
 	}
 	public void setNumPedido(int numPedido) {
 		this.numPedido = numPedido;
-	}
-	public int getNumMesa() {
-		return numMesa;
-	}
-	public void setNumMesa(int numMesa) {
-		this.numMesa = numMesa;
 	}
 	public int getNumAsiento() {
 		return numAsiento;

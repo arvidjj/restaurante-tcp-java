@@ -12,11 +12,13 @@ import org.apache.log4j.Logger;
 
 import beans.cheff.Cheff;
 import beans.pedido.Pedido;
+import beans.pedidoConjunto.PedidoConjunto;
 import beans.usuario.Usuario;
 import controller.MenuC;
 import service.cheff.CheffiServiceImpl;
 import service.cheff.ICheffService;
 import service.pedido.PedidoiServiceImpl;
+import service.pedidoConjunto.PedidoConjuntoiServiceImpl;
 import service.usuario.IUsuarioService;	
 import service.usuario.UsuarioiServiceImpl;
 import utils.Loggeador;
@@ -29,13 +31,17 @@ public class Hilo extends Thread {
 	private final Integer _numeroHilo;
 	private final Cheff chefAsignado; 
 	private final CheffiServiceImpl cheffService;
+	
+	private final PedidoConjuntoiServiceImpl pedidoConjuntoService;
 	private final PedidoiServiceImpl pedidoService;
+	
 	private final Loggeador log;
 	
-	public Hilo(Socket socket, Integer numeroHilo, Cheff chefAsignado, CheffiServiceImpl chefService, PedidoiServiceImpl pedidoServ) throws IOException {
+	public Hilo(Socket socket, Integer numeroHilo, Cheff chefAsignado, CheffiServiceImpl chefService, PedidoConjuntoiServiceImpl pedidoConjServ, PedidoiServiceImpl pedidoServ) throws IOException {
 		//Servicios
 		cheffService =chefService;
 		pedidoService =pedidoServ;
+		pedidoConjuntoService =pedidoConjServ;
 		log = new Loggeador();
 		
 		_socketCliente = socket;
@@ -58,24 +64,30 @@ public class Hilo extends Thread {
 			_dataOutputStream.writeObject(menuPrincipal);
 			
 			//2- OBTENER PEDIDO (CUANDO EL CLIETNE PRESIONA ENVIAR)
-			final Pedido pedido = (Pedido) _dataInputStream.readObject();
-			log.loggear("(hilo) Recibido pedido: " + pedido.getNumPedido() + " En la mesa: " + pedido.getNumMesa() + ", asiento: " + pedido.getNumAsiento());
-			pedidoService.save(pedido); //guardar pedido en el servicio
-			log.loggear("(hilo) Pedido #" + pedido.getNumPedido() + " asignado al Chef " + chefAsignado.getNombre());
+			final PedidoConjunto pedidoEnConjunto = (PedidoConjunto) _dataInputStream.readObject();
+			log.loggear("(hilo " + _numeroHilo +") Recibido pedidos de la mesa: " + pedidoEnConjunto.getNumMesa());
+			System.out.println("(hilo " + _numeroHilo +") Recibido pedidos de la mesa: " + pedidoEnConjunto.getNumMesa());
 			
-			System.out.println("(hilo) Cheff asignado: " + chefAsignado.getNombre());
-			System.out.println("(hilo) Recibido pedido: " + pedido.getNumPedido() + " En la mesa: " + pedido.getNumMesa() + ", asiento: " + pedido.getNumAsiento());
-			System.out.println("(hilo) Orden: " + pedido.getPedMenu().getEntrada() + " " + pedido.getPedMenu().getPlatoFondo() + " " + pedido.getPedMenu().getBebidas());
+			pedidoConjuntoService.save(pedidoEnConjunto);
 			
-			System.out.println("(hilo) Escribe el numero del pedido para marcar como completado, Pedido#: " + pedido.getNumPedido());
+			log.loggear("(hilo " + _numeroHilo +") Pedido #" + pedidoEnConjunto.getNumMesa() + " asignado al Chef " + chefAsignado.getNombre());
+			System.out.println("(hilo " + _numeroHilo +") Cheff asignado: " + chefAsignado.getNombre());
+			
+			for (Pedido p : pedidoEnConjunto.getPedidos()) {		
+				pedidoService.save(p);//guardar pedidos en el servicio
+				System.out.println("(hilo " + _numeroHilo +") Asiento: " + p.getNumAsiento());
+				System.out.println("(hilo " + _numeroHilo +") Orden: " + p.getPedMenu().getEntrada() + " " + p.getPedMenu().getPlatoFondo() + " " + p.getPedMenu().getBebidas());
+			}
+			
+			System.out.println("(hilo " + _numeroHilo +") Escribe el numero del pedido para marcar como completado, Pedido#: " + pedidoEnConjunto.getNumMesa());
 			String opcion = reader.readLine();
 			
-			if (opcion.equals(Integer.toString(pedido.getNumPedido()))) {
-				pedido.setServido(true);
+			if (opcion.equals(Integer.toString(pedidoEnConjunto.getNumMesa()))) {
+				pedidoEnConjunto.setServidoEnTotalidad(true);
 			}
 			
 			sleep(1000);
-			_dataOutputStream.writeObject(pedido);
+			_dataOutputStream.writeObject(pedidoEnConjunto);
 		
 		_socketCliente.close();
 		} catch (IOException e) {
@@ -85,8 +97,8 @@ public class Hilo extends Thread {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		System.out.println("(hilo) Cheff " + chefAsignado.getNombre() + " ya esta disponible de nuevo.");
-		log.loggear("(hilo) Cheff " + chefAsignado.getNombre() + " ya esta disponible de nuevo.");
+		System.out.println("(hilo " + _numeroHilo +") Cheff " + chefAsignado.getNombre() + " ya esta disponible de nuevo.");
+		log.loggear("(hilo " + _numeroHilo +") Cheff " + chefAsignado.getNombre() + " ya esta disponible de nuevo.");
 		chefAsignado.setDisponible(true);
 	}
 	

@@ -11,6 +11,7 @@ import beans.comida.Comida;
 import server.thread.Hilo;
 import service.cheff.CheffiServiceImpl;
 import service.pedido.PedidoiServiceImpl;
+import service.pedidoConjunto.PedidoConjuntoiServiceImpl;
 import utils.Configurator;
 import utils.Loggeador;
 
@@ -38,10 +39,12 @@ public class ServidorGUI extends JFrame {
     
     private int contadorHilo; //contador de pedidos
     private int siguienteEnCola; //siguiente pedido en cola
-    //Servicios
+    
     private Cocina cocina;
+    //Servicios
     CheffiServiceImpl cheffService;
     PedidoiServiceImpl pedidoService;
+    PedidoConjuntoiServiceImpl pedidoConjuntoService;
     
     private Socket socketCliente;
     private Map<Integer, Socket> colaSockets;
@@ -57,6 +60,7 @@ public class ServidorGUI extends JFrame {
         JScrollPane logScrollPane = new JScrollPane(logTextArea);
         asignarPedidoButton = new JButton("Asignar Pedido"); 
         
+        pedidoConjuntoService = new PedidoConjuntoiServiceImpl();
         pedidoService = new PedidoiServiceImpl();
         cheffService = new CheffiServiceImpl();
         Cheff chef1 = new Cheff("Ramon");
@@ -108,7 +112,7 @@ public class ServidorGUI extends JFrame {
         setVisible(true);
         //asignarPedidoButton.setEnabled(false); //inicialmente deshabilitar
         
-        cocina = new Cocina(cheffService, pedidoService); //inicializar la cocina
+        cocina = new Cocina(cheffService, pedidoConjuntoService, pedidoService); //inicializar la cocina
         asignarPedidoButton.addActionListener(new ActionListener() {
         	@Override
             public void actionPerformed(ActionEvent e) {
@@ -117,8 +121,8 @@ public class ServidorGUI extends JFrame {
                 	Cheff chefAsignado = cheffService.findByName(selectedChefName); //obtener el cheff elegido
                 	
                     if ( (!(colaSockets.isEmpty())) && chefAsignado.isDisponible()) {                        
-                        System.out.println(siguienteEnCola);
-                        System.out.println(colaSockets.get(siguienteEnCola));
+                        //System.out.println(siguienteEnCola); //debugging
+                        //System.out.println(colaSockets.get(siguienteEnCola));
                         cocina.asignarPedido(colaSockets.get(siguienteEnCola), selectedChefName);//usar la clase cocina
                         colaSockets.remove(siguienteEnCola); //quitar de la cola el que ya se uso
                         siguienteEnCola++; //aumentar la cola
@@ -140,7 +144,7 @@ public class ServidorGUI extends JFrame {
             log("Servidor TCP esperando conexiones en el puerto " + serverSocket.getLocalPort());
             while (true) {
                 log("Esperando nuevo pedido...");
-                socketCliente = serverSocket.accept(); // Store the accepted socket
+                socketCliente = serverSocket.accept(); 
                 log("Pedido recibido desde puerto: " + socketCliente.getPort()+ ", seleccione el chef que desea asignar este pedido");
                 
                 colaSockets.put(contadorHilo, socketCliente);

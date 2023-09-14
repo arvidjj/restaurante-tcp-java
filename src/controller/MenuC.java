@@ -18,14 +18,15 @@ public class MenuC implements Serializable {
 	private MenuApp menuPrincipal;
 	
 	public MenuC() {
-		 Comida entrada1 = new Comida("Entrada 1", 100000);
-	        Comida platoFondo1 = new Comida("PlatoFondo 1", 100000);
-	        Comida postre1 = new Comida("Postre 1", 100000);
-	        Comida bebida1 = new Comida("Bebida 1", 100000);
-	        Comida entrada2 = new Comida("Entrada 2", 100000);
-	        Comida platoFondo2 = new Comida("PlatoFondo 2", 100000);
-	        Comida postre2 = new Comida("Postre 2", 100000);
-	        Comida bebida2= new Comida("Bebida 2", 100000);
+		 Comida entrada1 = new Comida("Papas dulces", 100000);
+	        Comida platoFondo1 = new Comida("Fideos", 100000);
+	        Comida postre1 = new Comida("Macaruya", 100000);
+	        Comida bebida1 = new Comida("Jugo", 100000);
+	        
+	        Comida entrada2 = new Comida("Rollos de queso", 100000);
+	        Comida platoFondo2 = new Comida("Salmon", 100000);
+	        Comida postre2 = new Comida("Helado", 100000);
+	        Comida bebida2= new Comida("Soda", 100000);
 	        Map<Integer, Comida> entradas = new HashMap<>();
 	        Map<Integer, Comida> platosFondo = new HashMap<>();
 	        Map<Integer, Comida> postres = new HashMap<>();

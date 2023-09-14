@@ -21,7 +21,7 @@
 	</target>
 
 	<!-- ejecutar servidor -->
-	<target name="run-server" description="servidor">
+	<target name="run-server" description="servidor" depends="java-compile">
 		<echo>corriendo server</echo>
 		<java fork="true" classname="${main.class}" failonerror="true">
 			<classpath>
