@@ -9,7 +9,7 @@ public abstract class BaseService<T extends AbstractBean> implements IBaseServic
 
 	private final Map<Integer, T> _lista;
 	
-	public BaseService( ) {
+	public BaseService() {
 		_lista = new HashMap<>();
 	}
 	

@@ -15,6 +15,7 @@ public class ClienteGUI extends JFrame {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	private JComboBox<Integer> personasComboBox;
 	private JComboBox<String> entradaComboBox;
     private JComboBox<String> platoFondoComboBox;
     private JComboBox<String> bebidasComboBox;
@@ -29,12 +30,15 @@ public class ClienteGUI extends JFrame {
     
     private MenuC menuRecibido;
     
+    
     public ClienteGUI() throws ClassNotFoundException {
         setTitle("Realizar un pedido");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(400, 300);
-        setLayout(new GridLayout(7, 2));
+        setSize(500, 400);
+        setLayout(new GridLayout(8, 2));
         
+        JLabel personasLabel = new JLabel("Cantidad de personas:");
+        personasComboBox = new JComboBox<>(new Integer[]{1, 2, 3, 4});
         //seleccionar comidas
         JLabel entradaLabel = new JLabel("Entrada:");
         entradaComboBox = new JComboBox<>();
@@ -53,7 +57,9 @@ public class ClienteGUI extends JFrame {
 
         //boton para enviar el pedido
         enviarPedidoButton = new JButton("Enviar Pedido");
-
+        
+        add(personasLabel);
+        add(personasComboBox);
         add(entradaLabel);
         add(entradaComboBox);
         add(platoFondoLabel);
@@ -68,7 +74,10 @@ public class ClienteGUI extends JFrame {
         add(sillaComboBox);
         add(new JLabel());
         add(enviarPedidoButton);
-
+        
+        // Mostrar la ventana
+        setLocationRelativeTo(null);
+        setVisible(true);
         //conexión con el servidor
         try {
             clienteSocket = new Socket(configuracion.getProperty("direccion"), configuracion.getIntProperty("puerto"));
@@ -79,9 +88,8 @@ public class ClienteGUI extends JFrame {
             menuRecibido = new MenuC();
             System.out.println("Obteniendo menu...");
             menuRecibido = (MenuC) dataInputStream.readObject();
-            //JOptionPane.showMessageDialog(this, "Menu recibido del servidor.");
             
-            popularComboBoxes(menuRecibido);
+            popularComboBoxes(menuRecibido); //popular los combo boxes con el menu recibido del server
             
             //2- AL PRESIONAR EL BOTON "ENVIAR PEDIDO" IR A LA FUNCION enviarPedido()
             enviarPedidoButton.addActionListener(new ActionListener() {
@@ -99,13 +107,10 @@ public class ClienteGUI extends JFrame {
             e.printStackTrace();
             JOptionPane.showMessageDialog(this, "Error al conectar al servidor.");
         }
-
-        // Mostrar la ventana
-        setLocationRelativeTo(null);
-        setVisible(true);
     }
     
     private void popularComboBoxes(MenuC menu) {
+    	//obteners strings de las comidas
     	String[] entradaOptions = menu.getMenuPrincipal().getEntradas().values()
                 .stream()
                 .map(comida -> comida.getNombre())
@@ -123,6 +128,7 @@ public class ClienteGUI extends JFrame {
                 .map(comida -> comida.getNombre())
                 .toArray(String[]::new);
     	
+    	//popular los combo boxes
     	entradaComboBox.setModel(new DefaultComboBoxModel<>(entradaOptions));
         platoFondoComboBox.setModel(new DefaultComboBoxModel<>(platoFondoOptions));
         bebidasComboBox.setModel(new DefaultComboBoxModel<>(bebidasOptions));

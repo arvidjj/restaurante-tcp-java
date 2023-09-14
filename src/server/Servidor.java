@@ -40,7 +40,7 @@ public class Servidor {
                 Cheff chefDisponible = chefs.get(1);
                 if (chefDisponible != null) {
                     // Pasa el pedido y el chef al hilo que atiende al cliente
-                    new Hilo(socketCliente, contadorHilo, chefDisponible);
+                    //new Hilo(socketCliente, contadorHilo, chefDisponible);
                     contadorHilo++;
                 } else {
                     System.out.println("Ese cheff no esta disponible");
